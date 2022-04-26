@@ -1,0 +1,15 @@
+делаем в (python manage.py shell)
+
+import vacancies.data as data
+from vacancies.models import Company, Specialty, Vacancy
+
+for company in data.companies:
+    Company.objects.create(**company)
+
+for specialty in data.specialties:
+    Specialty.objects.create(**specialty)
+
+for job in data.jobs:
+    job['specialty'] = Specialty.objects.get(code=job['specialty'])
+    job['company'] = Company.objects.get(id=job['company'])
+    Vacancy.objects.create(**job)
