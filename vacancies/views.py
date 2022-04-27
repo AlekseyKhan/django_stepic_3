@@ -1,5 +1,4 @@
 from django.http import Http404
-from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import TemplateView
 
@@ -28,7 +27,7 @@ class VacanciesView(ListView):
         elif self.kwargs['category'] in {s.code for s in Specialty.objects.all()}:
             return Vacancy.objects.filter(specialty__code=self.kwargs['category'])
         else:
-            raise Http404(f'Страница не найдена!')
+            raise Http404('Страница не найдена!')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -50,22 +49,9 @@ class VacancyView(DetailView):
     context_object_name = 'vacancy'
     pk_url_kwarg = 'vacancy_id'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(VacancyView, self).get_context_data(**kwargs)
-    #     return context
-
 
 class CompanyView(DetailView):
     template_name = 'vacancies/company.html'
     model = Company
     context_object_name = 'company'
     pk_url_kwarg = 'company_id'
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(CompanyView, self).get_context_data(**kwargs)
-    #     return context
-
-# def vacancy_view(request, vacancy_id):
-#     return render(request, 'vacancies/vacancy.html', context={
-#         id: vacancy_id
-#     })
