@@ -47,7 +47,7 @@ class VacanciesView(ListView):
 class VacancyView(DetailView):
     template_name = 'vacancies/vacancy.html'
     model = Vacancy
-    # context_object_name = 'vacancy'
+    context_object_name = 'vacancy'
     pk_url_kwarg = 'vacancy_id'
 
     # def get_context_data(self, **kwargs):
@@ -56,13 +56,14 @@ class VacancyView(DetailView):
 
 
 class CompanyView(DetailView):
+    template_name = 'vacancies/company.html'
     model = Company
-    template_name = 'vacancies/vacancy.html'
     context_object_name = 'company'
+    pk_url_kwarg = 'company_id'
 
-    def get_context_data(self, **kwargs):
-        context = super(CompanyView, self).get_context_data(**kwargs)
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(CompanyView, self).get_context_data(**kwargs)
+    #     return context
 
 # def vacancy_view(request, vacancy_id):
 #     return render(request, 'vacancies/vacancy.html', context={
