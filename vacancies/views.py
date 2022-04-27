@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import Http404, HttpResponseNotFound
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import TemplateView
 
@@ -13,6 +13,7 @@ class MainView(TemplateView):
         context = super(MainView, self).get_context_data(**kwargs)
         context['specialities'] = Specialty.objects.all()
         context['companies'] = Company.objects.all()
+        context['head_title'] = 'Джуманджи - Главная страница'
         return context
 
 
@@ -34,11 +35,10 @@ class VacanciesView(ListView):
 
         if 'category' not in self.kwargs:
             context['specialty_name'] = 'Все вакансии'
+            context['head_title'] = 'Джуманджи - Все вакансии'
         else:
-            try:
-                context['specialty_name'] = Specialty.objects.get(code=self.kwargs['category']).title
-            except Specialty.MultipleObjectsReturned:
-                raise Http404(f'Возникла ошибка при обращении на страницу \"{self.kwargs["category"]}\" !')
+            context['specialty_name'] = Specialty.objects.filter(code=self.kwargs['category'])[0].title
+            context['head_title'] = f"Джуманджи - {context['specialty_name']}"
 
         return context
 
@@ -49,9 +49,20 @@ class VacancyView(DetailView):
     context_object_name = 'vacancy'
     pk_url_kwarg = 'vacancy_id'
 
+    def get_context_data(self, **kwargs):
+        context = super(VacancyView, self).get_context_data(**kwargs)
+        context['head_title'] = f"Джуманджи - {Vacancy.objects.filter(pk=self.kwargs['vacancy_id'])[0].title}"
+        return context
+
 
 class CompanyView(DetailView):
     template_name = 'vacancies/company.html'
     model = Company
     context_object_name = 'company'
     pk_url_kwarg = 'company_id'
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyView, self).get_context_data(**kwargs)
+        context['head_title'] = f"Джуманджи - {Company.objects.filter(pk=self.kwargs['company_id'])[0].name}"
+
+        return context
